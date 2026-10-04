@@ -1,0 +1,54 @@
+{
+  "run": {
+    "instances": 30,
+    "scenarios": 90,
+    "skipped_demands": 0,
+    "demands_evaluated": 750,
+    "real_attributes": {
+      "erdos_renyi": {
+        "delay_real": 0,
+        "capacity_real": 0,
+        "edges": 48
+      },
+      "grid": {
+        "delay_real": 0,
+        "capacity_real": 0,
+        "edges": 49
+      },
+      "barabasi_albert": {
+        "delay_real": 0,
+        "capacity_real": 0,
+        "edges": 56
+      },
+      "abilene": {
+        "delay_real": 14,
+        "capacity_real": 0,
+        "edges": 14
+      },
+      "aarnet": {
+        "delay_real": 24,
+        "capacity_real": 0,
+        "edges": 24
+      },
+      "geant2012": {
+        "delay_real": 58,
+        "capacity_real": 39,
+        "edges": 61
+      }
+    }
+  },
+  "consistency": {
+    "scenarios": 90,
+    "pairs": 4005,
+    "tau_mean": 0.42876775165185244,
+    "tau_p10": 0.0,
+    "tau_share_above_0.5": 0.4581772784019975,
+    "first_share": {
+      "disjoint": 0.0,
+      "ecmp": 0.8777777777777778,
+      "ksp": 0.12222222222222222,
+      "maxflow": 0.0,
+      "shortest": 0.0
+    }
+  }
+}
