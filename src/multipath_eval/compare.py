@@ -17,7 +17,7 @@ DIRECTION = {"cost": -1, "delay": -1, "capacity": +1, "outage": -1}
 def scenario_means(rows: pd.DataFrame) -> pd.DataFrame:
     """Mean of each metric over demands, one row per scenario and algorithm."""
     cols = ["cost", "delay", "capacity", "outage", "expected_loss"]
-    return rows.groupby(["scenario", "family", "topology", "setting", "algorithm"], as_index=False)[cols].mean()
+    return rows.groupby(["scenario", "family", "topology", "size", "setting", "algorithm"], as_index=False)[cols].mean()
 
 
 def normalise(means: pd.DataFrame) -> pd.DataFrame:

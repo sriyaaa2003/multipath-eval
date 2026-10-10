@@ -1,6 +1,6 @@
 # multipath-eval: Blueprint
 
-Research toolkit that implements selected multipath routing algorithms, runs them on generated and public network topologies, scores them on cost, delay, capacity and fault probability, adds one combined cross-property comparison, and checks whether the rankings stay consistent across networks and settings.
+Research toolkit that implements selected multipath routing algorithms, runs them on real operator network topologies (Internet Topology Zoo), scores them on cost, delay, capacity and fault probability, adds one combined cross-property comparison, and checks whether the rankings stay consistent across networks and settings.
 
 **Collapsed sections (research repo, no users, no network service):** actors, API design, event architecture, frontend, background jobs, authn/authz, threat model, deployment. There is no server, no database, no LLM and no ML model. Reason: the tool is a batch command-line program that reads a config file and writes tables and plots. Dependency security is covered by pinned versions in `pyproject.toml`.
 
@@ -13,7 +13,7 @@ Research toolkit that implements selected multipath routing algorithms, runs the
 ## 2. Requirements
 | # | Requirement | Priority |
 |---|---|---|
-| F1 | Generate topologies: Erdos-Renyi, 2D grid, Barabasi-Albert; load GML files (Topology Zoo) | must |
+| F1 | Load Topology Zoo GML files; derive delay from node coordinates, capacity from link speed where present | must |
 | F2 | Assign edge cost, delay, capacity, fault probability from configured distributions, seeded; use real values from GML (link speed, coordinates) when present | must |
 | F3 | Algorithms: single shortest path (baseline), k-shortest paths, edge-disjoint paths, ECMP, max-flow split | must |
 | F4 | Metrics per demand: cost, delay, capacity, outage probability, expected loss | must |
@@ -87,7 +87,7 @@ docs/BLUEPRINT.md           this file
 numpy, networkx, scipy (Kendall's tau), matplotlib, pytest. No others.
 
 ## 11. Research validation
-Baseline: single shortest path. Metrics as above. Experiments: 3 generated families x seeds, 3 Topology Zoo graphs, 3 fault settings. **No results are claimed in this document;** they come only from running the tool.
+Baseline: single shortest path. Metrics as above. Experiments: 80 Topology Zoo networks, 3 fault settings. **No results are claimed in this document;** they come only from running the tool.
 
 ## 12. Risks
 | Risk | Consequence | Mitigation |

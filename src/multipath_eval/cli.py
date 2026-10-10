@@ -26,10 +26,11 @@ def run(config_path: str, out_dir: str | None = None) -> Path:
     stability = compare.rank_stability(norm, cfg.weight_vectors, np.random.default_rng([cfg.seed, 5]))
     consistency = compare.ranking_consistency(scored)
     groups = {
-        "topology": compare.group_consistency(scored, "topology"),
+        "size": compare.group_consistency(scored, "size"),
         "setting": compare.group_consistency(scored, "setting"),
     }
     out = Path(out_dir) if out_dir else cfg.base_dir / cfg.out_dir
+    groups["topology"] = compare.group_consistency(scored, "topology")
     write_report(out, rows, means, scored, stability, consistency, groups, nondominated, summary, cfg)
     return out
 

@@ -1,54 +1,424 @@
 {
   "run": {
-    "instances": 30,
-    "scenarios": 90,
+    "instances": 80,
+    "scenarios": 240,
     "skipped_demands": 0,
-    "demands_evaluated": 750,
+    "demands_evaluated": 2000,
     "real_attributes": {
-      "erdos_renyi": {
-        "delay_real": 0,
-        "capacity_real": 0,
-        "edges": 48
-      },
-      "grid": {
-        "delay_real": 0,
-        "capacity_real": 0,
-        "edges": 49
-      },
-      "barabasi_albert": {
-        "delay_real": 0,
-        "capacity_real": 0,
-        "edges": 56
-      },
-      "abilene": {
-        "delay_real": 14,
-        "capacity_real": 0,
-        "edges": 14
-      },
-      "aarnet": {
+      "Aarnet": {
         "delay_real": 24,
         "capacity_real": 0,
         "edges": 24
       },
-      "geant2012": {
+      "Abvt": {
+        "delay_real": 28,
+        "capacity_real": 0,
+        "edges": 31
+      },
+      "Agis": {
+        "delay_real": 30,
+        "capacity_real": 15,
+        "edges": 30
+      },
+      "Ans": {
+        "delay_real": 25,
+        "capacity_real": 0,
+        "edges": 25
+      },
+      "Arnes": {
+        "delay_real": 46,
+        "capacity_real": 43,
+        "edges": 46
+      },
+      "Arpanet19719": {
+        "delay_real": 22,
+        "capacity_real": 0,
+        "edges": 22
+      },
+      "Arpanet19723": {
+        "delay_real": 28,
+        "capacity_real": 0,
+        "edges": 28
+      },
+      "Arpanet19728": {
+        "delay_real": 32,
+        "capacity_real": 0,
+        "edges": 32
+      },
+      "Atmnet": {
+        "delay_real": 22,
+        "capacity_real": 22,
+        "edges": 22
+      },
+      "AttMpls": {
+        "delay_real": 56,
+        "capacity_real": 0,
+        "edges": 56
+      },
+      "Bandcon": {
+        "delay_real": 28,
+        "capacity_real": 0,
+        "edges": 28
+      },
+      "Bbnplanet": {
+        "delay_real": 28,
+        "capacity_real": 0,
+        "edges": 28
+      },
+      "Bellcanada": {
+        "delay_real": 64,
+        "capacity_real": 0,
+        "edges": 64
+      },
+      "Bellsouth": {
+        "delay_real": 64,
+        "capacity_real": 0,
+        "edges": 66
+      },
+      "Belnet2007": {
+        "delay_real": 24,
+        "capacity_real": 0,
+        "edges": 24
+      },
+      "Belnet2008": {
+        "delay_real": 24,
+        "capacity_real": 0,
+        "edges": 24
+      },
+      "Belnet2009": {
+        "delay_real": 24,
+        "capacity_real": 0,
+        "edges": 24
+      },
+      "Bics": {
+        "delay_real": 48,
+        "capacity_real": 0,
+        "edges": 48
+      },
+      "Biznet": {
+        "delay_real": 32,
+        "capacity_real": 0,
+        "edges": 33
+      },
+      "Claranet": {
+        "delay_real": 18,
+        "capacity_real": 0,
+        "edges": 18
+      },
+      "Colt": {
+        "delay_real": 164,
+        "capacity_real": 0,
+        "edges": 177
+      },
+      "CrlNetworkServices": {
+        "delay_real": 38,
+        "capacity_real": 0,
+        "edges": 38
+      },
+      "Darkstrand": {
+        "delay_real": 31,
+        "capacity_real": 0,
+        "edges": 31
+      },
+      "DeutscheTelekom": {
+        "delay_real": 55,
+        "capacity_real": 0,
+        "edges": 55
+      },
+      "Digex": {
+        "delay_real": 35,
+        "capacity_real": 0,
+        "edges": 35
+      },
+      "EliBackbone": {
+        "delay_real": 30,
+        "capacity_real": 0,
+        "edges": 30
+      },
+      "Fccn": {
+        "delay_real": 25,
+        "capacity_real": 0,
+        "edges": 25
+      },
+      "Forthnet": {
+        "delay_real": 59,
+        "capacity_real": 3,
+        "edges": 62
+      },
+      "Garr199901": {
+        "delay_real": 18,
+        "capacity_real": 0,
+        "edges": 18
+      },
+      "Geant2001": {
+        "delay_real": 38,
+        "capacity_real": 38,
+        "edges": 38
+      },
+      "Geant2009": {
+        "delay_real": 52,
+        "capacity_real": 52,
+        "edges": 52
+      },
+      "Geant2010": {
+        "delay_real": 56,
+        "capacity_real": 31,
+        "edges": 56
+      },
+      "Goodnet": {
+        "delay_real": 31,
+        "capacity_real": 0,
+        "edges": 31
+      },
+      "HiberniaGlobal": {
+        "delay_real": 76,
+        "capacity_real": 0,
+        "edges": 81
+      },
+      "Highwinds": {
+        "delay_real": 31,
+        "capacity_real": 0,
+        "edges": 31
+      },
+      "HostwayInternational": {
+        "delay_real": 21,
+        "capacity_real": 0,
+        "edges": 21
+      },
+      "HurricaneElectric": {
+        "delay_real": 37,
+        "capacity_real": 0,
+        "edges": 37
+      },
+      "Ibm": {
+        "delay_real": 24,
+        "capacity_real": 0,
+        "edges": 24
+      },
+      "Integra": {
+        "delay_real": 36,
+        "capacity_real": 0,
+        "edges": 36
+      },
+      "Intellifiber": {
+        "delay_real": 87,
+        "capacity_real": 0,
+        "edges": 95
+      },
+      "Internetmci": {
+        "delay_real": 33,
+        "capacity_real": 14,
+        "edges": 33
+      },
+      "Iris": {
+        "delay_real": 64,
+        "capacity_real": 0,
+        "edges": 64
+      },
+      "Janetbackbone": {
+        "delay_real": 43,
+        "capacity_real": 0,
+        "edges": 45
+      },
+      "Janetlense": {
+        "delay_real": 32,
+        "capacity_real": 34,
+        "edges": 34
+      },
+      "Kdl": {
+        "delay_real": 819,
+        "capacity_real": 0,
+        "edges": 895
+      },
+      "KentmanApr2007": {
+        "delay_real": 21,
+        "capacity_real": 23,
+        "edges": 23
+      },
+      "KentmanAug2005": {
+        "delay_real": 29,
+        "capacity_real": 29,
+        "edges": 29
+      },
+      "KentmanFeb2008": {
+        "delay_real": 25,
+        "capacity_real": 26,
+        "edges": 27
+      },
+      "KentmanJul2005": {
+        "delay_real": 17,
+        "capacity_real": 17,
+        "edges": 17
+      },
+      "Latnet": {
+        "delay_real": 73,
+        "capacity_real": 73,
+        "edges": 74
+      },
+      "NetworkUsa": {
+        "delay_real": 39,
+        "capacity_real": 0,
+        "edges": 39
+      },
+      "Niif": {
+        "delay_real": 40,
+        "capacity_real": 41,
+        "edges": 41
+      },
+      "Noel": {
+        "delay_real": 25,
+        "capacity_real": 0,
+        "edges": 25
+      },
+      "Ntelos": {
         "delay_real": 58,
-        "capacity_real": 39,
-        "edges": 61
+        "capacity_real": 0,
+        "edges": 58
+      },
+      "Ntt": {
+        "delay_real": 63,
+        "capacity_real": 0,
+        "edges": 63
+      },
+      "Oxford": {
+        "delay_real": 26,
+        "capacity_real": 0,
+        "edges": 26
+      },
+      "Packetexchange": {
+        "delay_real": 27,
+        "capacity_real": 0,
+        "edges": 27
+      },
+      "Palmetto": {
+        "delay_real": 64,
+        "capacity_real": 0,
+        "edges": 64
+      },
+      "Peer1": {
+        "delay_real": 20,
+        "capacity_real": 0,
+        "edges": 20
+      },
+      "Psinet": {
+        "delay_real": 25,
+        "capacity_real": 0,
+        "edges": 25
+      },
+      "Quest": {
+        "delay_real": 31,
+        "capacity_real": 0,
+        "edges": 31
+      },
+      "RedBestel": {
+        "delay_real": 88,
+        "capacity_real": 0,
+        "edges": 93
+      },
+      "Rediris": {
+        "delay_real": 31,
+        "capacity_real": 31,
+        "edges": 31
+      },
+      "Renater2001": {
+        "delay_real": 27,
+        "capacity_real": 27,
+        "edges": 27
+      },
+      "Roedunet": {
+        "delay_real": 44,
+        "capacity_real": 0,
+        "edges": 46
+      },
+      "Savvis": {
+        "delay_real": 20,
+        "capacity_real": 20,
+        "edges": 20
+      },
+      "Spiralight": {
+        "delay_real": 16,
+        "capacity_real": 0,
+        "edges": 16
+      },
+      "Sunet": {
+        "delay_real": 29,
+        "capacity_real": 0,
+        "edges": 32
+      },
+      "Surfnet": {
+        "delay_real": 68,
+        "capacity_real": 0,
+        "edges": 68
+      },
+      "TataNld": {
+        "delay_real": 181,
+        "capacity_real": 0,
+        "edges": 186
+      },
+      "Tw": {
+        "delay_real": 115,
+        "capacity_real": 0,
+        "edges": 115
+      },
+      "Uninett2010": {
+        "delay_real": 101,
+        "capacity_real": 98,
+        "edges": 101
+      },
+      "Uninett2011": {
+        "delay_real": 93,
+        "capacity_real": 91,
+        "edges": 96
+      },
+      "UsCarrier": {
+        "delay_real": 171,
+        "capacity_real": 0,
+        "edges": 189
+      },
+      "UsSignal": {
+        "delay_real": 71,
+        "capacity_real": 0,
+        "edges": 78
+      },
+      "VtlWavenet2008": {
+        "delay_real": 89,
+        "capacity_real": 0,
+        "edges": 92
+      },
+      "VtlWavenet2011": {
+        "delay_real": 93,
+        "capacity_real": 0,
+        "edges": 96
+      },
+      "Xeex": {
+        "delay_real": 34,
+        "capacity_real": 0,
+        "edges": 34
+      },
+      "Xspedius": {
+        "delay_real": 49,
+        "capacity_real": 0,
+        "edges": 49
+      },
+      "York": {
+        "delay_real": 24,
+        "capacity_real": 0,
+        "edges": 24
       }
     }
   },
   "consistency": {
-    "scenarios": 90,
-    "pairs": 4005,
-    "tau_mean": 0.42876775165185244,
-    "tau_p10": 0.0,
-    "tau_share_above_0.5": 0.4581772784019975,
+    "scenarios": 240,
+    "pairs": 28680,
+    "tau_mean": 0.05357369548744746,
+    "tau_p10": -0.6,
+    "tau_share_above_0.5": 0.20341701534170153,
     "first_share": {
-      "disjoint": 0.0,
-      "ecmp": 0.8777777777777778,
-      "ksp": 0.12222222222222222,
-      "maxflow": 0.0,
-      "shortest": 0.0
+      "disjoint": 0.13333333333333333,
+      "ecmp": 0.25,
+      "ksp": 0.38333333333333336,
+      "maxflow": 0.075,
+      "shortest": 0.17083333333333334
     }
   }
 }

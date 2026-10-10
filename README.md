@@ -1,66 +1,63 @@
 # multipath-eval
 
-Evaluation toolkit for multipath routing algorithms. It implements five routing algorithms, runs them on generated and public network topologies, scores each on **cost, delay, capacity and fault probability**, combines the four into one cross-property comparison, and checks whether the rankings stay consistent across networks and settings.
+Which multipath routing algorithm is best? It depends on what you measure and on the network. This toolkit implements five algorithms,
+runs them on **80 real operator networks** from the [Internet Topology Zoo](https://topology-zoo.org/), scores each on **cost, delay,
+capacity and outage probability**, and checks whether the ranking holds across networks and settings. There are no generated graphs.
 
-Built with Python, NumPy, NetworkX, SciPy, pandas and Matplotlib. The design is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md).
-
-## Algorithms
-
-| name | idea |
+| algorithm | idea |
 |---|---|
 | `shortest` | baseline: one least-cost path |
 | `ksp` | k least-cost loopless paths (Yen), equal split |
 | `disjoint` | up to k edge-disjoint paths, equal split |
 | `ecmp` | all least-hop paths (capped at k), equal split |
-| `maxflow` | maximum flow on edge capacities decomposed into paths, split proportional to path flow |
+| `maxflow` | maximum flow on edge capacities decomposed into paths, split in proportion to path flow |
 
-## Metrics (per source-destination pair, for a split path set)
+**Metrics** per source-destination pair: cost and mean delay (split-weighted), capacity (largest demand the split can carry), and outage
+probability (all paths down at once, independent link failures, 4,000 Monte Carlo draws shared by all algorithms). The combined score
+min-max normalises each metric within a scenario and averages with equal weights; Pareto non-dominance, 500 random weight vectors and
+Kendall's tau between scenario rankings test whether the single score hides anything.
 
-- **cost**: split-weighted sum of edge costs. **delay**: split-weighted mean path delay.
-- **capacity**: largest demand the split can carry, `min over edges of capacity / share of traffic on the edge`.
-- **outage probability**: probability that every path is down, with independent edge failures (Monte Carlo, the same draws for all algorithms in a scenario). **expected loss** (exact) is also written to the CSV.
-- **combined score**: each metric min-max normalised across the algorithms of a scenario (1 = best), then a weighted mean (weights in the config).
-- **comparison beyond one score**: Pareto non-dominance, the share of random weight vectors (Dirichlet) under which each algorithm ranks first, and Kendall's tau between the rankings of every pair of scenarios.
+## Data
+
+The networks with at least 15 nodes, coordinates for 95% of nodes and at least as many links as nodes: 80 of the 261 in the Zoo
+(`scripts/make_zoo_config.py` selects them). Each gets 25 random source-destination pairs and three failure settings (x0.5, x1, x2).
+What is real and what is assumed:
+
+| property | source |
+|---|---|
+| topology | real |
+| delay | real: great-circle link length / 200 km per ms (96% of the 4,699 links have coordinates at both ends) |
+| capacity | real link speed where the file has one (**15%** of links), otherwise a draw from 1 to 10 |
+| cost, failure probability | assumed proportional to link length (longer fibre costs more and is cut more often); mean cost 5.5, mean failure probability 0.03 |
+
+## Results (80 networks, 240 scenarios, 2,000 demands)
+
+| algorithm | cost | delay (ms) | capacity | outage prob. | combined score | first in x% of scenarios | first under random weights |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| shortest | 24.5 | 11.2 | 2.6 | 0.127 | 0.508 | 17% | 30% |
+| ecmp | 26.9 | 11.9 | 2.9 | 0.116 | 0.507 | 25% | 11% |
+| ksp | 32.1 | 14.2 | 2.9 | 0.063 | 0.492 | **38%** | 23% |
+| maxflow | 39.9 | 18.3 | **5.9** | 0.068 | 0.490 | 8% | 28% |
+| disjoint | 33.9 | 14.8 | 3.1 | 0.079 | 0.452 | 13% | 9% |
+
+- **No algorithm wins.** The mean combined scores of the top four differ by 0.02, and rankings barely agree between scenarios (mean
+  Kendall's tau **0.05**; only 20% of scenario pairs above 0.5). `ksp` is best on large networks (0.548), `ecmp` on small ones (0.529).
+- **The answer depends on the weights.** `ksp` is first most often under equal weights, but across random weight vectors the leaders are
+  `shortest` and `maxflow` (30% and 28%): `maxflow` carries 1.9 times the capacity of the next algorithm for a cost 63% above `shortest`.
+- **Edge-disjoint paths score lowest**: they cost more than `ksp` and still have a higher outage probability (0.079 against 0.063).
+- The failure setting changes scores by less than 0.02, much less than network size does.
+
+Limits: failures are independent and proportional to length, cost is a proxy, and 85% of capacities are sampled, so the capacity-driven
+conclusions (`maxflow`) are the least certain. Per-network tables are in `results/default/score_by_topology.csv`.
 
 ## Run
 
 ```bash
 pip install -e ".[dev]"
-python -m multipath_eval run --config configs/default.toml
-pytest
+python -m multipath_eval run --config configs/default.toml     # results/default/: results.md, CSVs, summary.json, plots
+python scripts/make_zoo_config.py path/to/topologyzoo/gml      # rebuild the network list
+pytest                                                           # 13 tests, including byte-identical reruns
 ```
 
-Every parameter (topologies, seeds, attribute ranges, failure settings, k, weights, Monte Carlo draws) is in [configs/default.toml](configs/default.toml). Output goes to `results/<run>/`: `results.md`, CSV files, `summary.json` and three plots. The same config always gives byte-identical files (tested).
-
-## Topologies
-
-Generated: Erdos-Renyi, 2D grid and Barabasi-Albert graphs (5 seeds each). Public: three real networks from the [Internet Topology Zoo](http://www.topology-zoo.org/) (Abilene, Aarnet, Geant2012; 5 attribute seeds each), loaded from the GML files in `data/topology_zoo/` (obtained from a public mirror of the Zoo dataset; the Zoo is licensed CC BY, cite Knight et al., "The Internet Topology Zoo", IEEE JSAC 2011).
-
-On the Zoo graphs, delay is computed from the node coordinates (distance / 200 km per ms) and capacity from the link speed where the file has it. Cost and failure probability are not in the files and are always sampled. See `results/default/summary.json` for how many edges used real values.
-
-## Results of the default run
-
-750 source-destination pairs in 90 scenarios (30 topology instances x 3 failure settings); no pair was skipped. Full tables and plots are in [results/default/](results/default/results.md).
-
-| algorithm | mean combined score | ranks first | first under random weights | outage prob. | capacity |
-|---|---|---|---|---|---|
-| ecmp | 0.610 | 87.8% | 41.9% | 0.061 | 3.82 |
-| disjoint | 0.528 | 0.0% | 7.0% | 0.031 | 4.21 |
-| ksp | 0.497 | 12.2% | 10.7% | 0.033 | 3.70 |
-| maxflow | 0.480 | 0.0% | 28.1% | 0.029 | 10.06 |
-| shortest | 0.469 | 0.0% | 12.4% | 0.099 | 3.27 |
-
-What this shows, and what it does not:
-
-- With equal weights ECMP ranks first in 88% of scenarios, but it wins under only 42% of random weight vectors. Max-flow is first under 28% of them because it carries about 2.4 times the capacity of the next algorithm, and it has the lowest outage probability. **The winner depends on the weights**, so a single combined score hides a real trade-off.
-- Ranking consistency across scenarios is moderate: mean Kendall tau 0.43 over 4005 scenario pairs, and 46% of pairs above 0.5.
-- The failure setting barely changes the combined score (it only scales outage probability); topology family changes it more.
-- ECMP's good score partly reflects how it is defined here (least-hop paths, which are also short in cost and delay on these graphs); this is a property of the setup, not a general claim about ECMP.
-
-## Limitations
-
-- Edge failures are independent. Shared-risk link groups are not modelled.
-- Cost and failure probability are sampled, not measured; delay and capacity are real only where the Zoo files provide them. Results on the generated graphs say nothing about any operator's network.
-- Splits are static and equal (or proportional to flow). No congestion, queueing or dynamic rerouting is simulated.
-- The combined score is relative within a scenario: adding or removing an algorithm changes the normalised values (the rank-stability test is there to show how much that matters).
-- Five seeds per topology; spread across seeds is in `scenario_scores.csv` but no confidence intervals are computed yet.
+Every parameter lives in `configs/default.toml`; the design is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md). Topology Zoo: Knight et al.,
+"The Internet Topology Zoo", IEEE JSAC 2011 (CC BY); GML files from a public mirror.

@@ -37,41 +37,483 @@ fail_scale = 1.0
 name = "high_fail"
 fail_scale = 2.0
 
-[[topologies]]
-name = "erdos_renyi"
-family = "erdos_renyi"
-nodes = 30
-p = 0.12
-seeds = 5
 
 [[topologies]]
-name = "grid"
-family = "grid"
-rows = 5
-cols = 6
-seeds = 5
-
-[[topologies]]
-name = "barabasi_albert"
-family = "barabasi_albert"
-nodes = 30
-m = 2
-seeds = 5
-
-[[topologies]]
-name = "abilene"
-family = "gml"
-path = "data/topology_zoo/Abilene.gml"
-seeds = 5
-
-[[topologies]]
-name = "aarnet"
+name = "Aarnet"
 family = "gml"
 path = "data/topology_zoo/Aarnet.gml"
-seeds = 5
+seeds = 1
 
 [[topologies]]
-name = "geant2012"
+name = "Abvt"
 family = "gml"
-path = "data/topology_zoo/Geant2012.gml"
-seeds = 5
+path = "data/topology_zoo/Abvt.gml"
+seeds = 1
+
+[[topologies]]
+name = "Agis"
+family = "gml"
+path = "data/topology_zoo/Agis.gml"
+seeds = 1
+
+[[topologies]]
+name = "Ans"
+family = "gml"
+path = "data/topology_zoo/Ans.gml"
+seeds = 1
+
+[[topologies]]
+name = "Arnes"
+family = "gml"
+path = "data/topology_zoo/Arnes.gml"
+seeds = 1
+
+[[topologies]]
+name = "Arpanet19719"
+family = "gml"
+path = "data/topology_zoo/Arpanet19719.gml"
+seeds = 1
+
+[[topologies]]
+name = "Arpanet19723"
+family = "gml"
+path = "data/topology_zoo/Arpanet19723.gml"
+seeds = 1
+
+[[topologies]]
+name = "Arpanet19728"
+family = "gml"
+path = "data/topology_zoo/Arpanet19728.gml"
+seeds = 1
+
+[[topologies]]
+name = "Atmnet"
+family = "gml"
+path = "data/topology_zoo/Atmnet.gml"
+seeds = 1
+
+[[topologies]]
+name = "AttMpls"
+family = "gml"
+path = "data/topology_zoo/AttMpls.gml"
+seeds = 1
+
+[[topologies]]
+name = "Bandcon"
+family = "gml"
+path = "data/topology_zoo/Bandcon.gml"
+seeds = 1
+
+[[topologies]]
+name = "Bbnplanet"
+family = "gml"
+path = "data/topology_zoo/Bbnplanet.gml"
+seeds = 1
+
+[[topologies]]
+name = "Bellcanada"
+family = "gml"
+path = "data/topology_zoo/Bellcanada.gml"
+seeds = 1
+
+[[topologies]]
+name = "Bellsouth"
+family = "gml"
+path = "data/topology_zoo/Bellsouth.gml"
+seeds = 1
+
+[[topologies]]
+name = "Belnet2007"
+family = "gml"
+path = "data/topology_zoo/Belnet2007.gml"
+seeds = 1
+
+[[topologies]]
+name = "Belnet2008"
+family = "gml"
+path = "data/topology_zoo/Belnet2008.gml"
+seeds = 1
+
+[[topologies]]
+name = "Belnet2009"
+family = "gml"
+path = "data/topology_zoo/Belnet2009.gml"
+seeds = 1
+
+[[topologies]]
+name = "Bics"
+family = "gml"
+path = "data/topology_zoo/Bics.gml"
+seeds = 1
+
+[[topologies]]
+name = "Biznet"
+family = "gml"
+path = "data/topology_zoo/Biznet.gml"
+seeds = 1
+
+[[topologies]]
+name = "Claranet"
+family = "gml"
+path = "data/topology_zoo/Claranet.gml"
+seeds = 1
+
+[[topologies]]
+name = "Colt"
+family = "gml"
+path = "data/topology_zoo/Colt.gml"
+seeds = 1
+
+[[topologies]]
+name = "CrlNetworkServices"
+family = "gml"
+path = "data/topology_zoo/CrlNetworkServices.gml"
+seeds = 1
+
+[[topologies]]
+name = "Darkstrand"
+family = "gml"
+path = "data/topology_zoo/Darkstrand.gml"
+seeds = 1
+
+[[topologies]]
+name = "DeutscheTelekom"
+family = "gml"
+path = "data/topology_zoo/DeutscheTelekom.gml"
+seeds = 1
+
+[[topologies]]
+name = "Digex"
+family = "gml"
+path = "data/topology_zoo/Digex.gml"
+seeds = 1
+
+[[topologies]]
+name = "EliBackbone"
+family = "gml"
+path = "data/topology_zoo/EliBackbone.gml"
+seeds = 1
+
+[[topologies]]
+name = "Fccn"
+family = "gml"
+path = "data/topology_zoo/Fccn.gml"
+seeds = 1
+
+[[topologies]]
+name = "Forthnet"
+family = "gml"
+path = "data/topology_zoo/Forthnet.gml"
+seeds = 1
+
+[[topologies]]
+name = "Garr199901"
+family = "gml"
+path = "data/topology_zoo/Garr199901.gml"
+seeds = 1
+
+[[topologies]]
+name = "Geant2001"
+family = "gml"
+path = "data/topology_zoo/Geant2001.gml"
+seeds = 1
+
+[[topologies]]
+name = "Geant2009"
+family = "gml"
+path = "data/topology_zoo/Geant2009.gml"
+seeds = 1
+
+[[topologies]]
+name = "Geant2010"
+family = "gml"
+path = "data/topology_zoo/Geant2010.gml"
+seeds = 1
+
+[[topologies]]
+name = "Goodnet"
+family = "gml"
+path = "data/topology_zoo/Goodnet.gml"
+seeds = 1
+
+[[topologies]]
+name = "HiberniaGlobal"
+family = "gml"
+path = "data/topology_zoo/HiberniaGlobal.gml"
+seeds = 1
+
+[[topologies]]
+name = "Highwinds"
+family = "gml"
+path = "data/topology_zoo/Highwinds.gml"
+seeds = 1
+
+[[topologies]]
+name = "HostwayInternational"
+family = "gml"
+path = "data/topology_zoo/HostwayInternational.gml"
+seeds = 1
+
+[[topologies]]
+name = "HurricaneElectric"
+family = "gml"
+path = "data/topology_zoo/HurricaneElectric.gml"
+seeds = 1
+
+[[topologies]]
+name = "Ibm"
+family = "gml"
+path = "data/topology_zoo/Ibm.gml"
+seeds = 1
+
+[[topologies]]
+name = "Integra"
+family = "gml"
+path = "data/topology_zoo/Integra.gml"
+seeds = 1
+
+[[topologies]]
+name = "Intellifiber"
+family = "gml"
+path = "data/topology_zoo/Intellifiber.gml"
+seeds = 1
+
+[[topologies]]
+name = "Internetmci"
+family = "gml"
+path = "data/topology_zoo/Internetmci.gml"
+seeds = 1
+
+[[topologies]]
+name = "Iris"
+family = "gml"
+path = "data/topology_zoo/Iris.gml"
+seeds = 1
+
+[[topologies]]
+name = "Janetbackbone"
+family = "gml"
+path = "data/topology_zoo/Janetbackbone.gml"
+seeds = 1
+
+[[topologies]]
+name = "Janetlense"
+family = "gml"
+path = "data/topology_zoo/Janetlense.gml"
+seeds = 1
+
+[[topologies]]
+name = "Kdl"
+family = "gml"
+path = "data/topology_zoo/Kdl.gml"
+seeds = 1
+
+[[topologies]]
+name = "KentmanApr2007"
+family = "gml"
+path = "data/topology_zoo/KentmanApr2007.gml"
+seeds = 1
+
+[[topologies]]
+name = "KentmanAug2005"
+family = "gml"
+path = "data/topology_zoo/KentmanAug2005.gml"
+seeds = 1
+
+[[topologies]]
+name = "KentmanFeb2008"
+family = "gml"
+path = "data/topology_zoo/KentmanFeb2008.gml"
+seeds = 1
+
+[[topologies]]
+name = "KentmanJul2005"
+family = "gml"
+path = "data/topology_zoo/KentmanJul2005.gml"
+seeds = 1
+
+[[topologies]]
+name = "Latnet"
+family = "gml"
+path = "data/topology_zoo/Latnet.gml"
+seeds = 1
+
+[[topologies]]
+name = "NetworkUsa"
+family = "gml"
+path = "data/topology_zoo/NetworkUsa.gml"
+seeds = 1
+
+[[topologies]]
+name = "Niif"
+family = "gml"
+path = "data/topology_zoo/Niif.gml"
+seeds = 1
+
+[[topologies]]
+name = "Noel"
+family = "gml"
+path = "data/topology_zoo/Noel.gml"
+seeds = 1
+
+[[topologies]]
+name = "Ntelos"
+family = "gml"
+path = "data/topology_zoo/Ntelos.gml"
+seeds = 1
+
+[[topologies]]
+name = "Ntt"
+family = "gml"
+path = "data/topology_zoo/Ntt.gml"
+seeds = 1
+
+[[topologies]]
+name = "Oxford"
+family = "gml"
+path = "data/topology_zoo/Oxford.gml"
+seeds = 1
+
+[[topologies]]
+name = "Packetexchange"
+family = "gml"
+path = "data/topology_zoo/Packetexchange.gml"
+seeds = 1
+
+[[topologies]]
+name = "Palmetto"
+family = "gml"
+path = "data/topology_zoo/Palmetto.gml"
+seeds = 1
+
+[[topologies]]
+name = "Peer1"
+family = "gml"
+path = "data/topology_zoo/Peer1.gml"
+seeds = 1
+
+[[topologies]]
+name = "Psinet"
+family = "gml"
+path = "data/topology_zoo/Psinet.gml"
+seeds = 1
+
+[[topologies]]
+name = "Quest"
+family = "gml"
+path = "data/topology_zoo/Quest.gml"
+seeds = 1
+
+[[topologies]]
+name = "RedBestel"
+family = "gml"
+path = "data/topology_zoo/RedBestel.gml"
+seeds = 1
+
+[[topologies]]
+name = "Rediris"
+family = "gml"
+path = "data/topology_zoo/Rediris.gml"
+seeds = 1
+
+[[topologies]]
+name = "Renater2001"
+family = "gml"
+path = "data/topology_zoo/Renater2001.gml"
+seeds = 1
+
+[[topologies]]
+name = "Roedunet"
+family = "gml"
+path = "data/topology_zoo/Roedunet.gml"
+seeds = 1
+
+[[topologies]]
+name = "Savvis"
+family = "gml"
+path = "data/topology_zoo/Savvis.gml"
+seeds = 1
+
+[[topologies]]
+name = "Spiralight"
+family = "gml"
+path = "data/topology_zoo/Spiralight.gml"
+seeds = 1
+
+[[topologies]]
+name = "Sunet"
+family = "gml"
+path = "data/topology_zoo/Sunet.gml"
+seeds = 1
+
+[[topologies]]
+name = "Surfnet"
+family = "gml"
+path = "data/topology_zoo/Surfnet.gml"
+seeds = 1
+
+[[topologies]]
+name = "TataNld"
+family = "gml"
+path = "data/topology_zoo/TataNld.gml"
+seeds = 1
+
+[[topologies]]
+name = "Tw"
+family = "gml"
+path = "data/topology_zoo/Tw.gml"
+seeds = 1
+
+[[topologies]]
+name = "Uninett2010"
+family = "gml"
+path = "data/topology_zoo/Uninett2010.gml"
+seeds = 1
+
+[[topologies]]
+name = "Uninett2011"
+family = "gml"
+path = "data/topology_zoo/Uninett2011.gml"
+seeds = 1
+
+[[topologies]]
+name = "UsCarrier"
+family = "gml"
+path = "data/topology_zoo/UsCarrier.gml"
+seeds = 1
+
+[[topologies]]
+name = "UsSignal"
+family = "gml"
+path = "data/topology_zoo/UsSignal.gml"
+seeds = 1
+
+[[topologies]]
+name = "VtlWavenet2008"
+family = "gml"
+path = "data/topology_zoo/VtlWavenet2008.gml"
+seeds = 1
+
+[[topologies]]
+name = "VtlWavenet2011"
+family = "gml"
+path = "data/topology_zoo/VtlWavenet2011.gml"
+seeds = 1
+
+[[topologies]]
+name = "Xeex"
+family = "gml"
+path = "data/topology_zoo/Xeex.gml"
+seeds = 1
+
+[[topologies]]
+name = "Xspedius"
+family = "gml"
+path = "data/topology_zoo/Xspedius.gml"
+seeds = 1
+
+[[topologies]]
+name = "York"
+family = "gml"
+path = "data/topology_zoo/York.gml"
+seeds = 1

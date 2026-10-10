@@ -1,4 +1,4 @@
-"""Topology generators, a GML loader and seeded edge attribute assignment."""
+"""Loader for Internet Topology Zoo networks (GML or GraphML) and edge attribute assignment."""
 
 from __future__ import annotations
 
@@ -20,12 +20,18 @@ def _largest_component(g: nx.Graph) -> nx.Graph:
     return g.subgraph(nodes).copy()
 
 
-def load_gml(path: str | Path) -> nx.Graph:
-    """Load a Topology Zoo style GML file as a simple connected undirected graph."""
+def load_network(path: str | Path) -> nx.Graph:
+    """Load a Topology Zoo GML or GraphML file as a simple connected undirected graph."""
     path = Path(path)
     if not path.is_file():
-        raise FileNotFoundError(f"GML file not found: {path}")
-    raw = nx.read_gml(path, label="id")
+        raise FileNotFoundError(f"topology file not found: {path}")
+    if path.suffix.lower() == ".graphml":
+        raw = nx.read_graphml(path)
+    else:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if "multigraph" not in text:  # some Zoo files list parallel links; read them as a multigraph
+            text = text.replace("graph [", "graph [ multigraph 1", 1)
+        raw = nx.parse_gml(text, label="id")
     simple = nx.Graph()
     simple.add_nodes_from(raw.nodes(data=True))
     for u, v, data in raw.edges(data=True):
@@ -36,20 +42,15 @@ def load_gml(path: str | Path) -> nx.Graph:
     return _largest_component(simple)
 
 
-def build_topology(spec: TopologySpec, seed: int, base_dir: Path, rng: np.random.Generator) -> nx.Graph:
-    p = spec.params
-    if spec.family == "erdos_renyi":
-        g = nx.gnp_random_graph(int(p["nodes"]), float(p["p"]), seed=int(rng.integers(2**31)))
-        g = _largest_component(g)
-    elif spec.family == "grid":
-        g = nx.convert_node_labels_to_integers(nx.grid_2d_graph(int(p["rows"]), int(p["cols"])))
-    elif spec.family == "barabasi_albert":
-        g = nx.barabasi_albert_graph(int(p["nodes"]), int(p["m"]), seed=int(rng.integers(2**31)))
-    elif spec.family == "gml":
-        g = load_gml(base_dir / p["path"])
-    else:  # pragma: no cover - validated in config
+def has_coordinates(g: nx.Graph, share: float = 0.95) -> bool:
+    ok = sum(1 for _, d in g.nodes(data=True) if "Latitude" in d and "Longitude" in d)
+    return ok >= share * g.number_of_nodes()
+
+
+def build_topology(spec: TopologySpec, base_dir: Path) -> nx.Graph:
+    if spec.family != "gml":  # pragma: no cover - validated in config
         raise ValueError(spec.family)
-    return nx.Graph(g)
+    return load_network(base_dir / spec.params["path"])
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -74,21 +75,33 @@ def _speed_gbps(data: dict) -> float | None:
 
 
 def assign_attributes(g: nx.Graph, cfg: Config, rng: np.random.Generator) -> dict:
-    """Set cost, delay, capacity and fail on every edge. Real GML values are used when present.
+    """Set cost, delay, capacity and fail on every edge from the real network.
 
-    Returns counts of how many edges got real versus sampled delay and capacity.
+    Delay is distance / propagation speed. Cost and failure probability are proportional to link length
+    (longer fibre costs more and is cut more often), scaled so that the mean over the network equals the
+    midpoint of the configured range. Capacity is the published link speed where the file has one and a
+    sample from the configured range otherwise. Returns counts of real versus sampled delay and capacity.
     """
     used = {"delay_real": 0, "capacity_real": 0, "edges": g.number_of_edges()}
-    for u, v, data in g.edges(data=True):
-        data["cost"] = float(rng.uniform(cfg.cost.low, cfg.cost.high))
-        data["fail"] = float(rng.uniform(cfg.fail_prob.low, cfg.fail_prob.high))
-
+    km = {}
+    for u, v in g.edges():
         a, b = g.nodes[u], g.nodes[v]
         if all(key in n for n in (a, b) for key in ("Latitude", "Longitude")):
-            km = haversine_km(a["Latitude"], a["Longitude"], b["Latitude"], b["Longitude"])
-            data["delay"] = max(km / cfg.km_per_ms, cfg.min_delay_ms)
+            km[(u, v)] = max(haversine_km(a["Latitude"], a["Longitude"], b["Latitude"], b["Longitude"]), 1.0)
+    mean_km = float(np.mean(list(km.values()))) if km else 1.0
+    cost_mid = (cfg.cost.low + cfg.cost.high) / 2
+    fail_mid = (cfg.fail_prob.low + cfg.fail_prob.high) / 2
+
+    for u, v, data in g.edges(data=True):
+        if (u, v) in km:
+            rel = km[(u, v)] / mean_km
+            data["cost"] = cost_mid * rel
+            data["fail"] = min(fail_mid * rel, 0.5)
+            data["delay"] = max(km[(u, v)] / cfg.km_per_ms, cfg.min_delay_ms)
             used["delay_real"] += 1
         else:
+            data["cost"] = float(rng.uniform(cfg.cost.low, cfg.cost.high))
+            data["fail"] = float(rng.uniform(cfg.fail_prob.low, cfg.fail_prob.high))
             data["delay"] = float(rng.uniform(cfg.delay_ms.low, cfg.delay_ms.high))
 
         speed = _speed_gbps(data)

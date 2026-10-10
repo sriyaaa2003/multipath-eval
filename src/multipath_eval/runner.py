@@ -20,7 +20,7 @@ def run_experiment(cfg: Config) -> tuple[pd.DataFrame, dict]:
     for t_idx, spec in enumerate(cfg.topologies):
         for seed in range(spec.seeds):
             rng = np.random.default_rng([cfg.seed, t_idx, seed])
-            g = build_topology(spec, seed, cfg.base_dir, rng)
+            g = build_topology(spec, cfg.base_dir)
             used = assign_attributes(g, cfg, rng)
             summary["instances"] += 1
             summary["real_attributes"][spec.name] = used
@@ -51,7 +51,8 @@ def run_experiment(cfg: Config) -> tuple[pd.DataFrame, dict]:
                         rows.append(
                             {
                                 "scenario": scenario,
-                                "family": spec.family if spec.family != "gml" else "topology_zoo",
+                                "family": "topology_zoo",
+                                "size": "small (<25 nodes)" if g.number_of_nodes() < 25 else ("medium (25-49)" if g.number_of_nodes() < 50 else "large (50+)"),
                                 "topology": spec.name,
                                 "setting": setting.name,
                                 "src": src,

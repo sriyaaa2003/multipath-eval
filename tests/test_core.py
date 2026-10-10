@@ -10,7 +10,7 @@ from multipath_eval.algorithms import ALGORITHMS, disjoint, ecmp, ksp, maxflow, 
 from multipath_eval.cli import run
 from multipath_eval.config import ConfigError, load_config
 from multipath_eval.metrics import draw_failures, edge_index, evaluate
-from multipath_eval.topologies import assign_attributes, load_gml
+from multipath_eval.topologies import assign_attributes, load_network
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -88,17 +88,17 @@ def test_disconnected_pair_returns_none():
 
 
 def test_gml_loader_reads_public_topology_with_real_values():
-    g = load_gml(ROOT / "data" / "topology_zoo" / "Abilene.gml")
+    g = load_network(ROOT / "data" / "topology_zoo" / "Arnes.gml")
     assert nx.is_connected(g)
-    assert g.number_of_nodes() == 11 and g.number_of_edges() == 14
     cfg = load_config(ROOT / "configs" / "default.toml")
     used = assign_attributes(g, cfg, np.random.default_rng(0))
-    assert used["delay_real"] == 14  # delay comes from node coordinates
+    assert used["delay_real"] == g.number_of_edges()  # delay comes from node coordinates
+    assert all(d["fail"] > 0 and d["cost"] > 0 for _, _, d in g.edges(data=True))
 
 
 def test_missing_gml_raises(tmp_path):
     with pytest.raises(FileNotFoundError):
-        load_gml(tmp_path / "nope.gml")
+        load_network(tmp_path / "nope.gml")
 
 
 def test_config_validation_names_the_field(tmp_path):
@@ -134,6 +134,7 @@ def test_normalise_and_score_direction():
 def tiny_config(tmp_path):
     cfg_dir = tmp_path / "configs"
     cfg_dir.mkdir()
+    zoo = (ROOT / "data" / "topology_zoo").as_posix()
     (cfg_dir / "tiny.toml").write_text(
         """
 [run]
@@ -161,18 +162,16 @@ fail_scale = 1.0
 name = "b"
 fail_scale = 2.0
 [[topologies]]
-name = "grid"
-family = "grid"
-rows = 3
-cols = 4
-seeds = 2
+name = "arnes"
+family = "gml"
+path = "{zoo}/Arnes.gml"
+seeds = 1
 [[topologies]]
-name = "ba"
-family = "barabasi_albert"
-nodes = 12
-m = 2
-seeds = 2
-""",
+name = "geant2010"
+family = "gml"
+path = "{zoo}/Geant2010.gml"
+seeds = 1
+""".replace("{zoo}", zoo),
         encoding="utf-8",
     )
     return cfg_dir / "tiny.toml"
@@ -184,5 +183,5 @@ def test_end_to_end_is_deterministic(tmp_path):
     out2 = run(str(cfg), str(tmp_path / "r2"))
     for name in ("demand_metrics.csv", "scenario_scores.csv", "results.md"):
         assert (out1 / name).read_bytes() == (out2 / name).read_bytes()
-    for name in ("metrics_by_algorithm.png", "rank_by_topology.png", "cost_vs_outage.png"):
+    for name in ("metrics_by_algorithm.png", "rank_distribution.png", "cost_vs_outage.png"):
         assert (out1 / name).stat().st_size > 0

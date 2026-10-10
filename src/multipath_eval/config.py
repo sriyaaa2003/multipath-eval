@@ -6,7 +6,7 @@ import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
 
-FAMILIES = {"erdos_renyi", "grid", "barabasi_albert", "gml"}
+FAMILIES = {"gml"}
 METRICS = ("cost", "delay", "capacity", "outage")
 
 

@@ -65,7 +65,10 @@ def write_report(out: Path, rows, means, scored, stability, consistency, group_t
         + ", ".join(f"{k} {v:.1%}" for k, v in sorted(consistency["first_share"].items(), key=lambda kv: -kv[1])),
         "",
     ]
+    group_tables["topology"].to_csv(out / "score_by_topology.csv", index=False)
     for by, table in group_tables.items():
+        if by == "topology":
+            continue
         wide = table.pivot(index=by, columns="algorithm", values="score")
         wide.insert(0, by, wide.index)
         text += [f"## Mean combined score by {by}", "", _md(wide.reset_index(drop=True)), ""]
@@ -73,7 +76,7 @@ def write_report(out: Path, rows, means, scored, stability, consistency, group_t
     algo.to_csv(out / "algorithm_summary.csv", index=False)
 
     _plot_metrics(out, scored)
-    _plot_heatmap(out, group_tables["topology"])
+    _plot_rank_distribution(out, scored)
     _plot_tradeoff(out, scored)
 
 
@@ -89,19 +92,20 @@ def _plot_metrics(out: Path, scored: pd.DataFrame) -> None:
     plt.close(fig)
 
 
-def _plot_heatmap(out: Path, by_topology: pd.DataFrame) -> None:
-    wide = by_topology.pivot(index="topology", columns="algorithm", values="rank")
-    fig, ax = plt.subplots(figsize=(6.5, 4))
-    im = ax.imshow(wide.values, cmap="viridis_r", aspect="auto")
-    ax.set_xticks(range(wide.shape[1]), wide.columns, rotation=45)
-    ax.set_yticks(range(wide.shape[0]), wide.index)
-    for i in range(wide.shape[0]):
-        for j in range(wide.shape[1]):
-            ax.text(j, i, f"{wide.values[i, j]:.0f}", ha="center", va="center", color="white")
-    ax.set_title("Rank of combined score by topology (1 = best)")
-    fig.colorbar(im, ax=ax)
+def _plot_rank_distribution(out: Path, scored: pd.DataFrame) -> None:
+    ranks = sorted(scored["rank"].unique())
+    share = scored.groupby("algorithm")["rank"].value_counts(normalize=True).unstack(fill_value=0).reindex(columns=ranks, fill_value=0)
+    share = share.loc[share.mul(range(len(ranks))).sum(axis=1).sort_values().index]
+    fig, ax = plt.subplots(figsize=(6.5, 3.6))
+    left = np.zeros(len(share))
+    for i, r in enumerate(ranks):
+        ax.barh(share.index, share[r].values, left=left, label=f"rank {r:.0f}", color=plt.cm.viridis_r(i / max(len(ranks) - 1, 1)))
+        left += share[r].values
+    ax.set_xlabel("share of scenarios")
+    ax.set_title("Rank of combined score across networks (1 = best)")
+    ax.legend(ncol=5, fontsize=7, loc="lower center", bbox_to_anchor=(0.5, -0.4))
     fig.tight_layout()
-    fig.savefig(out / "rank_by_topology.png", dpi=150)
+    fig.savefig(out / "rank_distribution.png", dpi=150)
     plt.close(fig)
 
 

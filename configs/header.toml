@@ -1,0 +1,39 @@
+# Every tunable parameter of the experiment lives here.
+
+[run]
+name = "default"
+seed = 7                    # base seed; all randomness derives from it
+out_dir = "results/default"
+k = 3                       # max paths for ksp, disjoint, ecmp
+demands = 25                # source-destination pairs per topology instance
+mc_draws = 4000             # Monte Carlo draws for outage probability
+weight_vectors = 500        # random weight vectors for rank stability
+
+[weights]                   # weights of the combined score (normalised to sum to 1)
+cost = 0.25
+delay = 0.25
+capacity = 0.25
+outage = 0.25
+
+[attributes]                # uniform ranges used when the topology file has no real value
+cost = { low = 1.0, high = 10.0 }
+delay_ms = { low = 1.0, high = 20.0 }
+capacity = { low = 1.0, high = 10.0 }
+fail_prob = { low = 0.005, high = 0.05 }
+
+[geo]
+km_per_ms = 200.0           # propagation speed used to turn distance into delay
+min_delay_ms = 0.1
+
+[[settings]]                # multiplies every edge failure probability
+name = "low_fail"
+fail_scale = 0.5
+
+[[settings]]
+name = "base_fail"
+fail_scale = 1.0
+
+[[settings]]
+name = "high_fail"
+fail_scale = 2.0
+
