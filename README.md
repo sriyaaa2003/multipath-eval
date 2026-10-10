@@ -1,38 +1,35 @@
 # multipath-eval
 
-Which multipath routing algorithm is best? It depends on what you measure and on the network. This toolkit implements five algorithms,
-runs them on **80 real operator networks** from the [Internet Topology Zoo](https://topology-zoo.org/), scores each on **cost, delay,
-capacity and outage probability**, and checks whether the ranking holds across networks and settings. There are no generated graphs.
+A toolkit that compares multipath routing algorithms on 80 real operator networks.
 
-| algorithm | idea |
+## What I did
+- Implemented five routing algorithms:
+
+| name | idea |
 |---|---|
-| `shortest` | baseline: one least-cost path |
+| `shortest` | one least-cost path |
 | `ksp` | k least-cost loopless paths (Yen), equal split |
 | `disjoint` | up to k edge-disjoint paths, equal split |
-| `ecmp` | all least-hop paths (capped at k), equal split |
-| `maxflow` | maximum flow on edge capacities decomposed into paths, split in proportion to path flow |
+| `ecmp` | all least-hop paths (up to k), equal split |
+| `maxflow` | maximum flow decomposed into paths, split by path flow |
 
-**Metrics** per source-destination pair: cost and mean delay (split-weighted), capacity (largest demand the split can carry), and outage
-probability (all paths down at once, independent link failures, 4,000 Monte Carlo draws shared by all algorithms). The combined score
-min-max normalises each metric within a scenario and averages with equal weights; Pareto non-dominance, 500 random weight vectors and
-Kendall's tau between scenario rankings test whether the single score hides anything.
+- Scored each one on **cost, delay, capacity and outage probability** (Monte Carlo with 4,000 draws), and combined the four into one normalised score.
+- Added comparisons beyond one score: Pareto non-dominance, how often each algorithm wins under random weights, and Kendall's tau between rankings of different scenarios.
+- Ran everything on 80 networks from the Internet Topology Zoo (at least 15 nodes), with 25 random source-destination pairs each and three failure settings (x0.5, x1, x2): 240 scenarios, 2,000 demands. Delay comes from real link lengths; link speeds are real where the file has them.
+- **v2:** added five more algorithms, and a second failure model where nearby links fail together (a regional event knocks out every link within 30 to 150 km of a random point), with the same average failure rate as the independent model.
 
-## Data
-
-The networks with at least 15 nodes, coordinates for 95% of nodes and at least as many links as nodes: 80 of the 261 in the Zoo
-(`scripts/make_zoo_config.py` selects them). Each gets 25 random source-destination pairs and three failure settings (x0.5, x1, x2).
-What is real and what is assumed:
-
-| property | source |
+| v2 algorithm | idea |
 |---|---|
-| topology | real |
-| delay | real: great-circle link length / 200 km per ms (96% of the 4,699 links have coordinates at both ends) |
-| capacity | real link speed where the file has one (**15%** of links), otherwise a draw from 1 to 10 |
-| cost, failure probability | assumed proportional to link length (longer fibre costs more and is cut more often); mean cost 5.5, mean failure probability 0.03 |
+| `mincost_maxflow` | among all maximum flows, the cheapest |
+| `disjoint_mincost` | the k edge-disjoint paths of least total cost |
+| `ksp_wcmp` | k shortest paths, split in proportion to bottleneck capacity |
+| `node_disjoint` | k node-disjoint paths |
+| `geo_diverse` | paths that avoid the neighbourhood (150 km) of the earlier ones |
 
-## Results (80 networks, 240 scenarios, 2,000 demands)
+## Results
+Original five algorithms, 240 scenarios:
 
-| algorithm | cost | delay (ms) | capacity | outage prob. | combined score | first in x% of scenarios | first under random weights |
+| algorithm | cost | delay (ms) | capacity | outage prob. | combined score | first (equal weights) | first (random weights) |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | shortest | 24.5 | 11.2 | 2.6 | 0.127 | 0.508 | 17% | 30% |
 | ecmp | 26.9 | 11.9 | 2.9 | 0.116 | 0.507 | 25% | 11% |
@@ -40,24 +37,34 @@ What is real and what is assumed:
 | maxflow | 39.9 | 18.3 | **5.9** | 0.068 | 0.490 | 8% | 28% |
 | disjoint | 33.9 | 14.8 | 3.1 | 0.079 | 0.452 | 13% | 9% |
 
-- **No algorithm wins.** The mean combined scores of the top four differ by 0.02, and rankings barely agree between scenarios (mean
-  Kendall's tau **0.05**; only 20% of scenario pairs above 0.5). `ksp` is best on large networks (0.548), `ecmp` on small ones (0.529).
-- **The answer depends on the weights.** `ksp` is first most often under equal weights, but across random weight vectors the leaders are
-  `shortest` and `maxflow` (30% and 28%): `maxflow` carries 1.9 times the capacity of the next algorithm for a cost 63% above `shortest`.
-- **Edge-disjoint paths score lowest**: they cost more than `ksp` and still have a higher outage probability (0.079 against 0.063).
-- The failure setting changes scores by less than 0.02, much less than network size does.
+- `ksp` is first most often with equal weights, but `shortest` and `maxflow` lead across random weight vectors. `maxflow` carries 1.9 times the capacity of the next algorithm for a cost 63% above `shortest`.
+- Rankings across scenarios agree weakly: mean Kendall tau 0.05.
 
-Limits: failures are independent and proportional to length, cost is a proxy, and 85% of capacities are sampled, so the capacity-driven
-conclusions (`maxflow`) are the least certain. Per-network tables are in `results/default/score_by_topology.csv`.
+**v2 (10 algorithms, 95% interval by resampling networks):**
+- `mincost_maxflow` carries the same traffic as `maxflow` at **18% lower cost** (-7.1, -9.2 to -5.6) and with lower outage. It is first by combined score in **89%** of scenarios (91% under regional failures) and in 52% of random weight vectors.
+- `ksp_wcmp` gives **25% more capacity** than `ksp` (+0.70, +0.59 to +0.81) at lower cost.
+- `disjoint_mincost` is cheaper than `disjoint` (-1.8) with lower outage (-0.004).
+- The best algorithm is the same under independent and regional failures in 89% of scenarios.
 
-## Run
+![metrics by algorithm](results/default/metrics_by_algorithm.png)
 
-```bash
-pip install -e ".[dev]"
-python -m multipath_eval run --config configs/default.toml     # results/default/: results.md, CSVs, summary.json, plots
-python scripts/make_zoo_config.py path/to/topologyzoo/gml      # rebuild the network list
-pytest                                                           # 13 tests, including byte-identical reruns
+![cost vs outage](results/default/cost_vs_outage.png)
+
+![rank distribution](results/default/rank_distribution.png)
+
+Full tables: [results/default/results.md](results/default/results.md) (original five) and [results/v2/results_v2.md](results/v2/results_v2.md). More detail in [docs/V2.md](docs/V2.md).
+
+## How it was built
+
+```
+config (80 networks, k, weights) -> load graphs -> run 10 algorithms
+   -> metrics under 2 failure models (cost, delay, capacity, outage) -> combined score -> rankings + plots
 ```
 
-Every parameter lives in `configs/default.toml`; the design is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md). Topology Zoo: Knight et al.,
-"The Internet Topology Zoo", IEEE JSAC 2011 (CC BY); GML files from a public mirror.
+Everything is set in `configs/default.toml`, and the same config always gives the same output files. The design is in [docs/BLUEPRINT.md](docs/BLUEPRINT.md). 18 tests.
+
+## Tech stack
+Python, NumPy, NetworkX, SciPy, pandas, scikit-learn, Matplotlib, pytest.
+
+## Data
+Internet Topology Zoo (Knight et al., IEEE JSAC 2011), CC BY.
